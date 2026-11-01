@@ -41,6 +41,35 @@ flowchart TB
 
 **Web.** Сайт на Razor Pages: вход, регистрация, карта мест, мои брони, зоны и места, брони на сегодня. Хранит JWT в cookie с флагом HttpOnly и обращается к сервисам со стороны сервера.
 
+## 5. Модель данных
+
+- `identity_db.users`: email, хеш пароля, роль;
+- `seats_db.zones`: название, дневной и ночной тариф;
+- `seats_db.seats`: зона, номер, ряд, колонка, открыто ли место;
+- `bookings_db.bookings`: клиент, место, начало и конец в UTC, цена, статус (`Booked`, `CheckedIn`, `Cancelled`, `NoShow`), время прихода.
+
+Пересечение броней `Booked` и `CheckedIn` на одном месте запрещает exclusion constraint в PostgreSQL.
+
+## 6. Взаимодействие сервисов
+
+Сервисы общаются только по HTTP. Создание брони:
+
+```mermaid
+sequenceDiagram
+    participant W as Web
+    participant B as Bookings
+    participant S as Seats
+    participant D as bookings_db
+    W->>B: POST /api/bookings
+    B->>S: GET /api/seats/{id}
+    S-->>B: место открыто, тариф
+    B->>D: снять просроченные, проверить лимит, сохранить
+    D-->>B: сохранено или пересечение
+    B-->>W: бронь с ценой или ошибка
+```
+
+Фоновой задачи нет. При чтении просроченная бронь считается `NoShow`, а перед новой бронью на том же месте её статус обновляется в той же транзакции. Лимит в 2 брони проверяется под блокировкой по клиенту (advisory lock в PostgreSQL).
+
 ## 7. Безопасность
 
 - Identity выдаёт JWT с ролью, остальные сервисы проверяют его по общему ключу.
