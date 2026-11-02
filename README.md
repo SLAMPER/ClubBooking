@@ -11,6 +11,20 @@
 - xUnit, Testcontainers
 - GitHub Actions
 
+## Архитектура
+
+Три сервиса (Identity, Seats, Bookings) и сайт Web. У каждого сервиса своя база в PostgreSQL. Bookings проверяет место и тариф у Seats по HTTP.
+
+```mermaid
+flowchart TB
+    web[Web] --> identity[Identity]
+    web --> seats[Seats]
+    web --> bookings[Bookings]
+    bookings -- HTTP --> seats
+```
+
+Подробно: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
 ## План работ
 
 Этапы и сроки: [docs/PLAN.md](docs/PLAN.md)
