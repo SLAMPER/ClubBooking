@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ClubBooking.Bookings/ClubBooking.Bookings.csproj" />
+  <Project Path="ClubBooking.Identity/ClubBooking.Identity.csproj" />
+  <Project Path="ClubBooking.Seats/ClubBooking.Seats.csproj" />
+</Solution>
