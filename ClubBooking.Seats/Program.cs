@@ -16,6 +16,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<SeatsDbContext>();
     db.Database.Migrate();
+    SeedData.Seed(db);
 }
 
 app.MapOpenApi();
