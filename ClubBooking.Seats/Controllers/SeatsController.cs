@@ -1,5 +1,6 @@
 using ClubBooking.Seats.Data;
 using ClubBooking.Seats.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,7 @@ public class SeatsController(SeatsDbContext db) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<ActionResult<SeatDto>> Create(SeatRequest request)
     {
         var error = await CheckAsync(request, null);
@@ -46,6 +48,7 @@ public class SeatsController(SeatsDbContext db) : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Update(int id, SeatRequest request)
     {
         var seat = await db.Seats.FindAsync(id);
@@ -70,6 +73,7 @@ public class SeatsController(SeatsDbContext db) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var seat = await db.Seats.FindAsync(id);
@@ -85,9 +89,11 @@ public class SeatsController(SeatsDbContext db) : ControllerBase
     }
 
     [HttpPost("{id}/close")]
+    [Authorize(Roles = "admin")]
     public Task<IActionResult> Close(int id) => SetActiveAsync(id, false);
 
     [HttpPost("{id}/open")]
+    [Authorize(Roles = "admin")]
     public Task<IActionResult> Open(int id) => SetActiveAsync(id, true);
 
     private async Task<IActionResult> SetActiveAsync(int id, bool isActive)
