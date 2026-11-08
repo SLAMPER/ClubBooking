@@ -21,6 +21,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
     db.Database.Migrate();
+    SeedData.Seed(db, scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>());
 }
 
 app.MapOpenApi();
