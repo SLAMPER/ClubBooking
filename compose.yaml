@@ -17,6 +17,7 @@ services:
       dockerfile: ClubBooking.Identity/Dockerfile
     environment:
       ConnectionStrings__Default: Host=postgres;Database=identity_db;Username=postgres;Password=postgres
+      Jwt__Key: club-booking-demo-key-for-docker-compose-2026
     ports:
       - "5001:8080"
     depends_on:
