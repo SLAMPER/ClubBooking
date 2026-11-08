@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="ClubBooking.Bookings/ClubBooking.Bookings.csproj" />
+  <Project Path="ClubBooking.Identity.Tests/ClubBooking.Identity.Tests.csproj" />
   <Project Path="ClubBooking.Identity/ClubBooking.Identity.csproj" />
   <Project Path="ClubBooking.Seats.Tests/ClubBooking.Seats.Tests.csproj" />
   <Project Path="ClubBooking.Seats/ClubBooking.Seats.csproj" />
