@@ -1,5 +1,6 @@
 using ClubBooking.Seats.Data;
 using ClubBooking.Seats.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ public class ZonesController(SeatsDbContext db) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "admin")]
     public async Task<ActionResult<ZoneDto>> Create(ZoneRequest request)
     {
         if (await db.Zones.AnyAsync(z => z.Name == request.Name))
@@ -34,6 +36,7 @@ public class ZonesController(SeatsDbContext db) : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Update(int id, ZoneRequest request)
     {
         var zone = await db.Zones.FindAsync(id);
@@ -56,6 +59,7 @@ public class ZonesController(SeatsDbContext db) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     public async Task<IActionResult> Delete(int id)
     {
         var zone = await db.Zones.FindAsync(id);

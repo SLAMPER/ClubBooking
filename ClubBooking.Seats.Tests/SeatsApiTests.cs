@@ -6,7 +6,7 @@ namespace ClubBooking.Seats.Tests;
 
 public class SeatsApiTests(SeatsApiFactory factory) : IClassFixture<SeatsApiFactory>
 {
-    private readonly HttpClient _client = factory.CreateClient();
+    private readonly HttpClient _client = factory.CreateClient("admin");
 
     [Fact]
     public async Task GetSeats_ReturnsSeededSeatsWithZoneRates()
@@ -73,6 +73,22 @@ public class SeatsApiTests(SeatsApiFactory factory) : IClassFixture<SeatsApiFact
 
         Assert.False(closed!.IsActive);
         Assert.True(opened!.IsActive);
+    }
+
+    [Fact]
+    public async Task CreateZone_WithoutToken_ReturnsUnauthorized()
+    {
+        var response = await factory.CreateClient().PostAsJsonAsync("/api/zones", new ZoneRequest("Без входа", 100, 60));
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task CloseSeat_AsClient_ReturnsForbidden()
+    {
+        var response = await factory.CreateClient("client").PostAsync("/api/seats/1/close", null);
+
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
 
     private async Task<ZoneDto> CreateZoneAsync(string name)

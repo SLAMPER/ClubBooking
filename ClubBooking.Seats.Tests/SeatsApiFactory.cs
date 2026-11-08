@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Testcontainers.PostgreSql;
@@ -12,8 +13,16 @@ public class SeatsApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 
     public new Task DisposeAsync() => _postgres.DisposeAsync().AsTask();
 
+    public HttpClient CreateClient(string role)
+    {
+        var client = CreateClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", TestTokens.Create(role));
+        return client;
+    }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseSetting("ConnectionStrings:Default", _postgres.GetConnectionString());
+        builder.UseSetting("Jwt:Key", TestTokens.Key);
     }
 }
