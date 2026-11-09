@@ -43,11 +43,16 @@ services:
       dockerfile: ClubBooking.Bookings/Dockerfile
     environment:
       ConnectionStrings__Default: Host=postgres;Database=bookings_db;Username=postgres;Password=postgres
+      Jwt__Key: club-booking-demo-key-for-docker-compose-2026
+      Services__Seats: http://seats:8080
+      Club__TimeZone: Europe/Moscow
     ports:
       - "5003:8080"
     depends_on:
       postgres:
         condition: service_healthy
+      seats:
+        condition: service_started
 
   web:
     build:
