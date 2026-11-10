@@ -1,8 +1,133 @@
-﻿@page
+@page
 @model IndexModel
 @{
     ViewData["Title"] = "Карта мест";
 }
 
-<h1>Бронирование мест</h1>
-<p>Здесь будет карта мест компьютерного клуба.</p>
+<h1 class="h3 mb-3">Карта мест</h1>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger">@error</div>
+}
+
+<form method="get" class="row g-2 align-items-end mb-4">
+    <div class="col-auto">
+        <label asp-for="Date" class="form-label">Дата</label>
+        <input asp-for="Date" type="date" class="form-control" min="@Model.Today.ToString("yyyy-MM-dd")" value="@Model.Date?.ToString("yyyy-MM-dd")" />
+    </div>
+    <div class="col-auto">
+        <label asp-for="Time" class="form-label">Начало</label>
+        <select asp-for="Time" class="form-select" asp-items="@(new SelectList(IndexModel.TimeOptions, Model.Time))"></select>
+    </div>
+    <div class="col-auto">
+        <label asp-for="Hours" class="form-label">Длительность</label>
+        <select asp-for="Hours" class="form-select">
+            @for (var h = 1; h <= 5; h++)
+            {
+                <option value="@h" selected="@(h == Model.Hours)">@h ч</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Показать</button>
+    </div>
+</form>
+
+<p class="text-muted">
+    Свободные места на @Model.StartLocal.ToString("dd.MM.yyyy") с @Model.StartLocal.ToString("HH:mm") до @Model.EndLocal.ToString("HH:mm").
+    Нажмите на свободное место, чтобы увидеть цену и забронировать.
+</p>
+
+<div class="d-flex flex-wrap gap-3 mb-3 small">
+    <span><span class="seat-legend seat-free"></span> свободно</span>
+    <span><span class="seat-legend seat-busy"></span> занято</span>
+    <span><span class="seat-legend seat-closed"></span> закрыто</span>
+    @if (User.IsInRole("client"))
+    {
+        <span><span class="seat-legend seat-mine"></span> ваша бронь</span>
+    }
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        @foreach (var zone in Model.Zones)
+        {
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>@zone.Zone.Name</strong>
+                    <div class="small text-muted">днём @zone.Zone.DayRate.ToString("0") ₽/ч, ночью (с 00:00 до 08:00) @zone.Zone.NightRate.ToString("0") ₽/ч</div>
+                </div>
+                <div class="card-body">
+                    <div class="seat-grid" style="grid-template-columns: repeat(@zone.Cols, 4.5rem); grid-template-rows: repeat(@zone.Rows, 3rem);">
+                        @foreach (var seat in zone.Seats)
+                        {
+                            var place = $"grid-row: {seat.Row}; grid-column: {seat.Col};";
+                            if (!seat.IsActive)
+                            {
+                                <span class="seat seat-closed" style="@place" title="Закрыто на ремонт">@seat.Number</span>
+                            }
+                            else if (Model.Mine.Contains(seat.Id))
+                            {
+                                <span class="seat seat-mine" style="@place" title="Ваша бронь">@seat.Number</span>
+                            }
+                            else if (Model.Busy.Contains(seat.Id))
+                            {
+                                <span class="seat seat-busy" style="@place" title="Занято">@seat.Number</span>
+                            }
+                            else
+                            {
+                                <a class="seat seat-free @(seat.Id == Model.Selected?.Id ? "seat-selected" : "")" style="@place"
+                                   asp-page="/Index" asp-route-date="@Model.Date?.ToString("yyyy-MM-dd")" asp-route-time="@Model.Time"
+                                   asp-route-hours="@Model.Hours" asp-route-seat="@seat.Id" asp-fragment="booking">@seat.Number</a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card" id="booking">
+            <div class="card-body">
+                @if (Model.Selected == null)
+                {
+                    <p class="text-muted mb-0">Место не выбрано.</p>
+                }
+                else
+                {
+                    <h2 class="h5">Место @Model.Selected.Number</h2>
+                    <p class="mb-1">@Model.Selected.ZoneName</p>
+                    <p class="mb-1">@Model.StartLocal.ToString("dd.MM.yyyy"), с @Model.StartLocal.ToString("HH:mm") до @Model.EndLocal.ToString("HH:mm")</p>
+                    @if (Model.PriceError != null)
+                    {
+                        <p class="text-danger mb-0">@Model.PriceError</p>
+                    }
+                    else
+                    {
+                        <p class="fs-5">Цена: <strong>@Model.Price?.ToString("0") ₽</strong></p>
+                        @if (User.IsInRole("client"))
+                        {
+                            <form method="post" asp-page-handler="Book">
+                                <input type="hidden" name="Date" value="@Model.Date?.ToString("yyyy-MM-dd")" />
+                                <input type="hidden" name="Time" value="@Model.Time" />
+                                <input type="hidden" name="Hours" value="@Model.Hours" />
+                                <input type="hidden" name="Seat" value="@Model.Selected.Id" />
+                                <button type="submit" class="btn btn-success w-100">Забронировать</button>
+                            </form>
+                        }
+                        else if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <p class="text-muted mb-0">Бронировать могут только клиенты.</p>
+                        }
+                        else
+                        {
+                            <a class="btn btn-outline-primary w-100" asp-page="/Account/Login" asp-route-returnUrl="@(Request.Path + Request.QueryString)">Войдите, чтобы забронировать</a>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
