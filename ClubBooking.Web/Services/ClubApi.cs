@@ -32,8 +32,6 @@ public class ClubApi(IHttpClientFactory factory)
             ? Seats.PostAsJsonAsync("/api/seats", new { zoneId, number, row, col })
             : Seats.PutAsJsonAsync($"/api/seats/{id}", new { zoneId, number, row, col }));
 
-    public Task<ApiResult> DeleteSeatAsync(int id) => SendAsync(Seats.DeleteAsync($"/api/seats/{id}"));
-
     public Task<ApiResult> SetSeatActiveAsync(int id, bool isActive) =>
         SendAsync(Seats.PostAsync($"/api/seats/{id}/{(isActive ? "open" : "close")}", null));
 

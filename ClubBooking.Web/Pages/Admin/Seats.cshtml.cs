@@ -28,11 +28,4 @@ public class SeatsModel(ClubApi api) : PageModel
         TempData[result.Ok ? "Message" : "Error"] = result.Ok ? (isActive ? "Место открыто" : "Место закрыто на ремонт") : result.Error;
         return RedirectToPage();
     }
-
-    public async Task<IActionResult> OnPostDeleteAsync(int id)
-    {
-        var result = await api.DeleteSeatAsync(id);
-        TempData[result.Ok ? "Message" : "Error"] = result.Ok ? "Место удалено" : result.Error;
-        return RedirectToPage();
-    }
 }

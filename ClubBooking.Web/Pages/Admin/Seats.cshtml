@@ -53,9 +53,6 @@
                         <form method="post" asp-page-handler="Active" asp-route-id="@seat.Id" asp-route-isActive="@(!seat.IsActive)" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-outline-secondary">@(seat.IsActive ? "Закрыть" : "Открыть")</button>
                         </form>
-                        <form method="post" asp-page-handler="Delete" asp-route-id="@seat.Id" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
-                        </form>
                     </td>
                 </tr>
             }
@@ -81,4 +78,4 @@
         </tbody>
     </table>
 </div>
-<p class="text-muted small">Ряд и колонка задают положение места на карте. Закрытое место нельзя забронировать, уже созданные брони на нём остаются.</p>
+<p class="text-muted small">Ряд и колонка задают положение места на карте. Место нельзя удалить, его можно закрыть: закрытое место нельзя забронировать, уже созданные брони на нём остаются.</p>
