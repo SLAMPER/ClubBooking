@@ -1,0 +1,31 @@
+﻿@page
+@model ClubBooking.Web.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<div class="cb-card cb-auth">
+    <div>
+        <h1>Вход</h1>
+        <form method="post">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">Email</label>
+                <input asp-for="Email" class="form-control" autocomplete="username" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">Пароль</label>
+                <input asp-for="Password" class="form-control" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Войти</button>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <p class="cb-hint text-center mb-0"><a asp-page="/Account/Register" asp-route-returnUrl="@Model.ReturnUrl">Регистрация</a></p>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

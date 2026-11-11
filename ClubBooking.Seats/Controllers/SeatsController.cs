@@ -72,22 +72,6 @@ public class SeatsController(SeatsDbContext db) : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{id}")]
-    [Authorize(Roles = "admin")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var seat = await db.Seats.FindAsync(id);
-        if (seat == null)
-        {
-            return NotFound();
-        }
-
-        db.Seats.Remove(seat);
-        await db.SaveChangesAsync();
-
-        return NoContent();
-    }
-
     [HttpPost("{id}/close")]
     [Authorize(Roles = "admin")]
     public Task<IActionResult> Close(int id) => SetActiveAsync(id, false);

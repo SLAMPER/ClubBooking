@@ -1,0 +1,88 @@
+﻿@page
+@model ClubBooking.Web.Pages.Admin.SeatsModel
+@{
+    ViewData["Title"] = "Места";
+}
+
+<div class="cb-page-head">
+    <h1>Места</h1>
+</div>
+
+<div class="cb-fit">
+
+<partial name="_Messages" />
+
+<div class="cb-card">
+<div class="table-responsive">
+    <table class="table cb-table cb-table-seats">
+        <thead>
+            <tr>
+                <th>Номер</th>
+                <th>Зона</th>
+                <th>Ряд</th>
+                <th>Колонка</th>
+                <th>Состояние</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var seat in Model.Seats)
+            {
+                var form = $"seat-{seat.Id}";
+                <tr>
+                    <td data-cell="num" data-label="Номер"><input form="@form" name="number" value="@seat.Number" class="form-control form-control-sm cb-in-num" required /></td>
+                    <td data-cell="zone" data-label="Зона">
+                        <select form="@form" name="zoneId" class="form-select form-select-sm">
+                            @foreach (var zone in Model.Zones)
+                            {
+                                <option value="@zone.Id" selected="@(zone.Id == seat.ZoneId)">@zone.Name</option>
+                            }
+                        </select>
+                    </td>
+                    <td data-cell="row" data-label="Ряд"><input form="@form" name="row" type="number" min="1" max="20" value="@seat.Row" class="form-control form-control-sm cb-in-pos" required /></td>
+                    <td data-cell="col" data-label="Колонка"><input form="@form" name="col" type="number" min="1" max="20" value="@seat.Col" class="form-control form-control-sm cb-in-pos" required /></td>
+                    <td data-cell="status">
+                        @if (seat.IsActive)
+                        {
+                            <span class="cb-status is-open">открыто</span>
+                        }
+                        else
+                        {
+                            <span class="cb-status is-closed">закрыто</span>
+                        }
+                    </td>
+                    <td data-cell="action"><div class="cb-actions">
+                        <form id="@form" method="post" asp-page-handler="Save" asp-route-id="@seat.Id" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Сохранить</button>
+                        </form>
+                        <form method="post" asp-page-handler="Active" asp-route-id="@seat.Id" asp-route-isActive="@(!seat.IsActive)" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary cb-btn-toggle">@(seat.IsActive ? "Закрыть" : "Открыть")</button>
+                        </form>
+                    </div></td>
+                </tr>
+            }
+            <tr>
+                <td data-cell="num" data-label="Номер"><input form="seat-new" name="number" placeholder="Номер" class="form-control form-control-sm cb-in-num" required /></td>
+                <td data-cell="zone" data-label="Зона">
+                    <select form="seat-new" name="zoneId" class="form-select form-select-sm">
+                        @foreach (var zone in Model.Zones)
+                        {
+                            <option value="@zone.Id">@zone.Name</option>
+                        }
+                    </select>
+                </td>
+                <td data-cell="row" data-label="Ряд"><input form="seat-new" name="row" type="number" min="1" max="20" value="1" class="form-control form-control-sm cb-in-pos" required /></td>
+                <td data-cell="col" data-label="Колонка"><input form="seat-new" name="col" type="number" min="1" max="20" value="1" class="form-control form-control-sm cb-in-pos" required /></td>
+                <td></td>
+                <td data-cell="action"><div class="cb-actions">
+                    <form id="seat-new" method="post" asp-page-handler="Save">
+                        <button type="submit" class="btn btn-sm btn-primary">Добавить</button>
+                    </form>
+                </div></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+<p class="cb-hint">Ряд и колонка задают положение места на карте. Место нельзя удалить, его можно закрыть: закрытое место нельзя забронировать, уже созданные брони на нём остаются.</p>
+</div>

@@ -58,6 +58,11 @@ services:
     build:
       context: .
       dockerfile: ClubBooking.Web/Dockerfile
+    environment:
+      Services__identity: http://identity:8080
+      Services__seats: http://seats:8080
+      Services__bookings: http://bookings:8080
+      Club__TimeZone: Europe/Moscow
     ports:
       - "8080:8080"
     depends_on:

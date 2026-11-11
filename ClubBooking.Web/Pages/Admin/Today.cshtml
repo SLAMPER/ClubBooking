@@ -1,0 +1,60 @@
+﻿@page
+@model ClubBooking.Web.Pages.Admin.TodayModel
+@using ClubBooking.Web.Services
+@{
+    ViewData["Title"] = "Брони на сегодня";
+}
+
+<div class="cb-page-head">
+    <h1>Брони на сегодня, @Model.Time.Now.ToString("dd.MM.yyyy")</h1>
+</div>
+
+<div class="cb-fit">
+
+<partial name="_Messages" />
+
+@if (Model.Bookings.Count == 0)
+{
+    <div class="cb-card">
+        <p class="cb-empty">На сегодня броней нет.</p>
+    </div>
+}
+else
+{
+    <div class="cb-card">
+    <div class="table-responsive">
+        <table class="table cb-table cb-table-today">
+            <thead>
+                <tr>
+                    <th>Время</th>
+                    <th>Место</th>
+                    <th>Клиент</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model.Bookings)
+                {
+                    <tr>
+                        <td data-cell="time">с @Model.Time.ToLocal(b.StartUtc).ToString("HH:mm") до @Model.Time.ToLocal(b.EndUtc).ToString("HH:mm")</td>
+                        <td data-cell="seat"><strong>@b.SeatNumber</strong><span class="cb-sub">@b.ZoneName</span></td>
+                        <td data-cell="client">@b.UserEmail</td>
+                        <td data-cell="status"><span class="@ClubTime.StatusClass(b.Status)">@ClubTime.StatusText(b.Status)</span></td>
+                        <td class="text-end" data-cell="action">
+                            @if (b.CanCheckIn)
+                            {
+                                <form method="post" asp-page-handler="CheckIn" asp-route-id="@b.Id">
+                                    <button type="submit" class="btn btn-sm btn-primary">Отметить приход</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <p class="cb-hint">Приход можно отметить с 15 минут до начала брони до 15 минут после.</p>
+}
+</div>

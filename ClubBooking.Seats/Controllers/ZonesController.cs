@@ -70,7 +70,7 @@ public class ZonesController(SeatsDbContext db) : ControllerBase
 
         if (await db.Seats.AnyAsync(s => s.ZoneId == id))
         {
-            return Conflict("В зоне есть места, сначала удалите или перенесите их");
+            return Conflict("В зоне есть места, сначала перенесите их в другую зону");
         }
 
         db.Zones.Remove(zone);

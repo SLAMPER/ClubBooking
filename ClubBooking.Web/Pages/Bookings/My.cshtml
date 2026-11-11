@@ -1,0 +1,62 @@
+﻿@page
+@model ClubBooking.Web.Pages.Bookings.MyModel
+@using ClubBooking.Web.Services
+@{
+    ViewData["Title"] = "Мои брони";
+}
+
+<div class="cb-page-head">
+    <h1>Мои брони</h1>
+</div>
+
+<div class="cb-fit">
+
+<partial name="_Messages" />
+
+@if (Model.Bookings.Count == 0)
+{
+    <div class="cb-card">
+        <p class="cb-empty">Броней пока нет. <a asp-page="/Index">Выбрать место</a></p>
+    </div>
+}
+else
+{
+    <div class="cb-card">
+    <div class="table-responsive">
+        <table class="table cb-table cb-table-my">
+            <thead>
+                <tr>
+                    <th>Место</th>
+                    <th>Когда</th>
+                    <th>Цена</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model.Bookings)
+                {
+                    var start = Model.Time.ToLocal(b.StartUtc);
+                    var end = Model.Time.ToLocal(b.EndUtc);
+                    <tr>
+                        <td data-cell="seat"><strong>@b.SeatNumber</strong><span class="cb-sub">@b.ZoneName</span></td>
+                        <td data-cell="when">@start.ToString("dd.MM.yyyy")<span class="cb-sub">с @start.ToString("HH:mm") до @end.ToString("HH:mm")</span></td>
+                        <td data-cell="price">@b.Price.ToString("0.##") ₽</td>
+                        <td data-cell="status"><span class="@ClubTime.StatusClass(b.Status)">@ClubTime.StatusText(b.Status)</span></td>
+                        <td class="text-end" data-cell="action">
+                            @if (b.CanCancel)
+                            {
+                                <form method="post" asp-page-handler="Cancel" asp-route-id="@b.Id">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Отменить</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    </div>
+    <p class="cb-hint">Отменить бронь можно не позже чем за 1 час до начала. Если не прийти в течение 15 минут после начала, бронь снимается.</p>
+}
+</div>

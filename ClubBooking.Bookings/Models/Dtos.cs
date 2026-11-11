@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ClubBooking.Bookings.Models;
 
-public record CreateBookingRequest(int SeatId, DateTimeOffset Start, [Range(1, 5)] int Hours);
+public record CreateBookingRequest(int SeatId, DateTimeOffset Start, [Range(1, 5, ErrorMessage = "Бронь может длиться от 1 до 5 часов")] int Hours);
 
 public record BookingDto(
     Guid Id,

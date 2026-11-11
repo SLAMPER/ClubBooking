@@ -4,40 +4,66 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ClubBooking</title>
-    <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/fonts.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/ClubBooking.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    @{
+        var page = ViewContext.RouteData.Values["page"]?.ToString();
+        string Active(string name) => page == name ? "nav-link active" : "nav-link";
+    }
+    <header class="cb-header">
+        <nav class="navbar navbar-expand-md">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">ClubBooking</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand cb-brand" asp-page="/Index">
+                    ClubBooking
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#cb-menu" aria-controls="cb-menu"
+                        aria-expanded="false" aria-label="Меню">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Карта мест</a>
-                        </li>
+                <div class="collapse navbar-collapse" id="cb-menu">
+                    <ul class="navbar-nav cb-nav me-auto">
+                        <li class="nav-item"><a class="@Active("/Index")" asp-page="/Index">Карта мест</a></li>
+                        @if (User.IsInRole("client"))
+                        {
+                            <li class="nav-item"><a class="@Active("/Bookings/My")" asp-page="/Bookings/My">Мои брони</a></li>
+                        }
+                        @if (User.IsInRole("admin"))
+                        {
+                            <li class="nav-item"><a class="@Active("/Admin/Today")" asp-page="/Admin/Today">Сегодня</a></li>
+                            <li class="nav-item"><a class="@Active("/Admin/Zones")" asp-page="/Admin/Zones">Зоны</a></li>
+                            <li class="nav-item"><a class="@Active("/Admin/Seats")" asp-page="/Admin/Seats">Места</a></li>
+                        }
                     </ul>
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <div class="cb-user">
+                            <span class="cb-user-name">@User.Identity.Name</span>
+                            <form method="post" asp-page="/Account/Logout">
+                                <button type="submit" class="btn btn-sm cb-btn-ghost">Выйти</button>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="cb-user">
+                            <a class="btn btn-sm cb-btn-ghost" asp-page="/Account/Login">Вход</a>
+                            <a class="btn btn-sm btn-primary" asp-page="/Account/Register">Регистрация</a>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 ClubBooking
-        </div>
+    <main role="main" class="container cb-main">
+        @RenderBody()
+    </main>
+
+    <footer class="cb-footer">
+        <div class="container">&copy; 2026 ClubBooking</div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
