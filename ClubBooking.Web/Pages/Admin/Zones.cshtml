@@ -1,15 +1,20 @@
-@page
+﻿@page
 @model ClubBooking.Web.Pages.Admin.ZonesModel
 @{
     ViewData["Title"] = "Зоны";
 }
 
-<h1 class="h3 mb-3">Зоны</h1>
+<div class="cb-page-head">
+    <h1>Зоны</h1>
+</div>
+
+<div class="cb-fit">
 
 <partial name="_Messages" />
 
+<div class="cb-card">
 <div class="table-responsive">
-    <table class="table align-middle">
+    <table class="table cb-table cb-table-zones">
         <thead>
             <tr>
                 <th>Название</th>
@@ -23,30 +28,32 @@
             {
                 var form = $"zone-{zone.Id}";
                 <tr>
-                    <td><input form="@form" name="name" value="@zone.Name" class="form-control" required /></td>
-                    <td><input form="@form" name="dayRate" type="number" min="0" step="0.01" value="@zone.DayRate.ToString("0.##")" class="form-control" required /></td>
-                    <td><input form="@form" name="nightRate" type="number" min="0" step="0.01" value="@zone.NightRate.ToString("0.##")" class="form-control" required /></td>
-                    <td class="text-end text-nowrap">
+                    <td data-cell="name" data-label="Название"><input form="@form" name="name" value="@zone.Name" class="form-control form-control-sm cb-in-name" required /></td>
+                    <td data-cell="day" data-label="Днём, ₽/ч"><input form="@form" name="dayRate" type="number" min="0" step="0.01" value="@zone.DayRate.ToString("0.##")" class="form-control form-control-sm cb-in-rate" required /></td>
+                    <td data-cell="night" data-label="Ночью, ₽/ч"><input form="@form" name="nightRate" type="number" min="0" step="0.01" value="@zone.NightRate.ToString("0.##")" class="form-control form-control-sm cb-in-rate" required /></td>
+                    <td data-cell="action"><div class="cb-actions">
                         <form id="@form" method="post" asp-page-handler="Save" asp-route-id="@zone.Id" class="d-inline">
-                            <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Сохранить</button>
                         </form>
                         <form method="post" asp-page-handler="Delete" asp-route-id="@zone.Id" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
                         </form>
-                    </td>
+                    </div></td>
                 </tr>
             }
             <tr>
-                <td><input form="zone-new" name="name" placeholder="Новая зона" class="form-control" required /></td>
-                <td><input form="zone-new" name="dayRate" type="number" min="0" step="0.01" class="form-control" required /></td>
-                <td><input form="zone-new" name="nightRate" type="number" min="0" step="0.01" class="form-control" required /></td>
-                <td class="text-end">
+                <td data-cell="name" data-label="Название"><input form="zone-new" name="name" placeholder="Новая зона" class="form-control form-control-sm cb-in-name" required /></td>
+                <td data-cell="day" data-label="Днём, ₽/ч"><input form="zone-new" name="dayRate" type="number" min="0" step="0.01" class="form-control form-control-sm cb-in-rate" required /></td>
+                <td data-cell="night" data-label="Ночью, ₽/ч"><input form="zone-new" name="nightRate" type="number" min="0" step="0.01" class="form-control form-control-sm cb-in-rate" required /></td>
+                <td data-cell="action"><div class="cb-actions">
                     <form id="zone-new" method="post" asp-page-handler="Save">
-                        <button type="submit" class="btn btn-sm btn-success">Добавить</button>
+                        <button type="submit" class="btn btn-sm btn-primary">Добавить</button>
                     </form>
-                </td>
+                </div></td>
             </tr>
         </tbody>
     </table>
 </div>
-<p class="text-muted small">Ночной тариф действует с 00:00 до 08:00. Зону с местами удалить нельзя.</p>
+</div>
+<p class="cb-hint">Ночной тариф действует с 00:00 до 08:00. Зону с местами удалить нельзя.</p>
+</div>

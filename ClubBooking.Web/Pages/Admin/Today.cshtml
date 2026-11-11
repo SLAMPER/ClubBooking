@@ -1,22 +1,29 @@
-@page
+﻿@page
 @model ClubBooking.Web.Pages.Admin.TodayModel
 @using ClubBooking.Web.Services
 @{
     ViewData["Title"] = "Брони на сегодня";
 }
 
-<h1 class="h3 mb-3">Брони на сегодня, @Model.Time.Now.ToString("dd.MM.yyyy")</h1>
+<div class="cb-page-head">
+    <h1>Брони на сегодня, @Model.Time.Now.ToString("dd.MM.yyyy")</h1>
+</div>
+
+<div class="cb-fit">
 
 <partial name="_Messages" />
 
 @if (Model.Bookings.Count == 0)
 {
-    <p class="text-muted">На сегодня броней нет.</p>
+    <div class="cb-card">
+        <p class="cb-empty">На сегодня броней нет.</p>
+    </div>
 }
 else
 {
+    <div class="cb-card">
     <div class="table-responsive">
-        <table class="table align-middle">
+        <table class="table cb-table cb-table-today">
             <thead>
                 <tr>
                     <th>Время</th>
@@ -30,15 +37,15 @@ else
                 @foreach (var b in Model.Bookings)
                 {
                     <tr>
-                        <td>с @Model.Time.ToLocal(b.StartUtc).ToString("HH:mm") до @Model.Time.ToLocal(b.EndUtc).ToString("HH:mm")</td>
-                        <td>@b.SeatNumber <span class="text-muted">(@b.ZoneName)</span></td>
-                        <td>@b.UserEmail</td>
-                        <td>@ClubTime.StatusText(b.Status)</td>
-                        <td class="text-end">
+                        <td data-cell="time">с @Model.Time.ToLocal(b.StartUtc).ToString("HH:mm") до @Model.Time.ToLocal(b.EndUtc).ToString("HH:mm")</td>
+                        <td data-cell="seat"><strong>@b.SeatNumber</strong><span class="cb-sub">@b.ZoneName</span></td>
+                        <td data-cell="client">@b.UserEmail</td>
+                        <td data-cell="status"><span class="@ClubTime.StatusClass(b.Status)">@ClubTime.StatusText(b.Status)</span></td>
+                        <td class="text-end" data-cell="action">
                             @if (b.CanCheckIn)
                             {
                                 <form method="post" asp-page-handler="CheckIn" asp-route-id="@b.Id">
-                                    <button type="submit" class="btn btn-sm btn-success">Отметить приход</button>
+                                    <button type="submit" class="btn btn-sm btn-primary">Отметить приход</button>
                                 </form>
                             }
                         </td>
@@ -47,5 +54,7 @@ else
             </tbody>
         </table>
     </div>
-    <p class="text-muted small">Приход можно отметить с 15 минут до начала брони до 15 минут после.</p>
+    </div>
+    <p class="cb-hint">Приход можно отметить с 15 минут до начала брони до 15 минут после.</p>
 }
+</div>

@@ -10,6 +10,8 @@ public class ClubTime(IConfiguration configuration)
 
     public DateTime ToUtc(DateTime local) => TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(local, DateTimeKind.Unspecified), _zone);
 
+    public static string StatusClass(string status) => "cb-status is-" + status.ToLowerInvariant();
+
     public static string StatusText(string status) => status switch
     {
         "Booked" => "Забронировано",

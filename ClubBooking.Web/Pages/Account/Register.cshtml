@@ -1,14 +1,13 @@
-@page
+﻿@page
 @model ClubBooking.Web.Pages.Account.RegisterModel
 @{
     ViewData["Title"] = "Регистрация";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-5">
-        <h1 class="h3 mb-3">Регистрация</h1>
+<div class="cb-card cb-auth">
+    <div>
+        <h1>Регистрация</h1>
         <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="ReturnUrl" />
             <div class="mb-3">
                 <label asp-for="Email" class="form-label">Email</label>
@@ -25,7 +24,8 @@
                 <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password" />
                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         </form>
     </div>
 </div>
