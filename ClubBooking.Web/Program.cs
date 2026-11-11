@@ -1,5 +1,8 @@
+using System.Globalization;
 using ClubBooking.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
 
 var builder = WebApplication.CreateBuilder(args);
 

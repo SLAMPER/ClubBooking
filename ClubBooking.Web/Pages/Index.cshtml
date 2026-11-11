@@ -56,7 +56,7 @@
             <div class="card mb-3">
                 <div class="card-header">
                     <strong>@zone.Zone.Name</strong>
-                    <div class="small text-muted">днём @zone.Zone.DayRate.ToString("0") ₽/ч, ночью (с 00:00 до 08:00) @zone.Zone.NightRate.ToString("0") ₽/ч</div>
+                    <div class="small text-muted">днём @zone.Zone.DayRate.ToString("0.##") ₽/ч, ночью (с 00:00 до 08:00) @zone.Zone.NightRate.ToString("0.##") ₽/ч</div>
                 </div>
                 <div class="card-body">
                     <div class="seat-grid" style="grid-template-columns: repeat(@zone.Cols, 4.5rem); grid-template-rows: repeat(@zone.Rows, 3rem);">
@@ -106,7 +106,7 @@
                     }
                     else
                     {
-                        <p class="fs-5">Цена: <strong>@Model.Price?.ToString("0") ₽</strong></p>
+                        <p class="fs-5">Цена: <strong>@Model.Price?.ToString("0.##") ₽</strong></p>
                         @if (User.IsInRole("client"))
                         {
                             <form method="post" asp-page-handler="Book">

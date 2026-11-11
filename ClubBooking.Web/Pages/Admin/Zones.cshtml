@@ -24,8 +24,8 @@
                 var form = $"zone-{zone.Id}";
                 <tr>
                     <td><input form="@form" name="name" value="@zone.Name" class="form-control" required /></td>
-                    <td><input form="@form" name="dayRate" type="number" min="0" step="1" value="@zone.DayRate.ToString("0")" class="form-control" required /></td>
-                    <td><input form="@form" name="nightRate" type="number" min="0" step="1" value="@zone.NightRate.ToString("0")" class="form-control" required /></td>
+                    <td><input form="@form" name="dayRate" type="number" min="0" step="0.01" value="@zone.DayRate.ToString("0.##")" class="form-control" required /></td>
+                    <td><input form="@form" name="nightRate" type="number" min="0" step="0.01" value="@zone.NightRate.ToString("0.##")" class="form-control" required /></td>
                     <td class="text-end text-nowrap">
                         <form id="@form" method="post" asp-page-handler="Save" asp-route-id="@zone.Id" class="d-inline">
                             <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
@@ -38,8 +38,8 @@
             }
             <tr>
                 <td><input form="zone-new" name="name" placeholder="Новая зона" class="form-control" required /></td>
-                <td><input form="zone-new" name="dayRate" type="number" min="0" step="1" class="form-control" required /></td>
-                <td><input form="zone-new" name="nightRate" type="number" min="0" step="1" class="form-control" required /></td>
+                <td><input form="zone-new" name="dayRate" type="number" min="0" step="0.01" class="form-control" required /></td>
+                <td><input form="zone-new" name="nightRate" type="number" min="0" step="0.01" class="form-control" required /></td>
                 <td class="text-end">
                     <form id="zone-new" method="post" asp-page-handler="Save">
                         <button type="submit" class="btn btn-sm btn-success">Добавить</button>

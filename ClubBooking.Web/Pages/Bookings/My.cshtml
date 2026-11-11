@@ -34,7 +34,7 @@ else
                     <tr>
                         <td>@b.SeatNumber<br /><span class="text-muted">@b.ZoneName</span></td>
                         <td>@start.ToString("dd.MM.yyyy")<br /><span class="text-muted">с @start.ToString("HH:mm") до @end.ToString("HH:mm")</span></td>
-                        <td>@b.Price.ToString("0") ₽</td>
+                        <td>@b.Price.ToString("0.##") ₽</td>
                         <td>@ClubTime.StatusText(b.Status)</td>
                         <td class="text-end">
                             @if (b.CanCancel)

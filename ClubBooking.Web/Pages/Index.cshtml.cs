@@ -83,7 +83,7 @@ public class IndexModel(ClubApi api, ClubTime time) : PageModel
             return RedirectToPage(new { Date = Date!.Value.ToString("yyyy-MM-dd"), Time, Hours, Seat });
         }
 
-        TempData["Message"] = $"Место {result.Value.SeatNumber} забронировано на {StartLocal:dd.MM.yyyy} с {StartLocal:HH:mm} до {EndLocal:HH:mm}, цена {result.Value.Price:0} ₽";
+        TempData["Message"] = $"Место {result.Value.SeatNumber} забронировано на {StartLocal:dd.MM.yyyy} с {StartLocal:HH:mm} до {EndLocal:HH:mm}, цена {result.Value.Price:0.##} ₽";
         return RedirectToPage("/Bookings/My");
     }
 
