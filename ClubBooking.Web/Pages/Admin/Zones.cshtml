@@ -1,0 +1,52 @@
+@page
+@model ClubBooking.Web.Pages.Admin.ZonesModel
+@{
+    ViewData["Title"] = "Зоны";
+}
+
+<h1 class="h3 mb-3">Зоны</h1>
+
+<partial name="_Messages" />
+
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Днём, ₽/ч</th>
+                <th>Ночью, ₽/ч</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var zone in Model.Zones)
+            {
+                var form = $"zone-{zone.Id}";
+                <tr>
+                    <td><input form="@form" name="name" value="@zone.Name" class="form-control" required /></td>
+                    <td><input form="@form" name="dayRate" type="number" min="0" step="1" value="@zone.DayRate.ToString("0")" class="form-control" required /></td>
+                    <td><input form="@form" name="nightRate" type="number" min="0" step="1" value="@zone.NightRate.ToString("0")" class="form-control" required /></td>
+                    <td class="text-end text-nowrap">
+                        <form id="@form" method="post" asp-page-handler="Save" asp-route-id="@zone.Id" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+                        </form>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@zone.Id" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td><input form="zone-new" name="name" placeholder="Новая зона" class="form-control" required /></td>
+                <td><input form="zone-new" name="dayRate" type="number" min="0" step="1" class="form-control" required /></td>
+                <td><input form="zone-new" name="nightRate" type="number" min="0" step="1" class="form-control" required /></td>
+                <td class="text-end">
+                    <form id="zone-new" method="post" asp-page-handler="Save">
+                        <button type="submit" class="btn btn-sm btn-success">Добавить</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<p class="text-muted small">Ночной тариф действует с 00:00 до 08:00. Зону с местами удалить нельзя.</p>

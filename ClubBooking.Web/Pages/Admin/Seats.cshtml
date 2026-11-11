@@ -1,0 +1,84 @@
+@page
+@model ClubBooking.Web.Pages.Admin.SeatsModel
+@{
+    ViewData["Title"] = "Места";
+}
+
+<h1 class="h3 mb-3">Места</h1>
+
+<partial name="_Messages" />
+
+<div class="table-responsive">
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Номер</th>
+                <th>Зона</th>
+                <th>Ряд</th>
+                <th>Колонка</th>
+                <th>Состояние</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var seat in Model.Seats)
+            {
+                var form = $"seat-{seat.Id}";
+                <tr>
+                    <td><input form="@form" name="number" value="@seat.Number" class="form-control" style="width: 6rem" required /></td>
+                    <td>
+                        <select form="@form" name="zoneId" class="form-select" style="min-width: 9rem">
+                            @foreach (var zone in Model.Zones)
+                            {
+                                <option value="@zone.Id" selected="@(zone.Id == seat.ZoneId)">@zone.Name</option>
+                            }
+                        </select>
+                    </td>
+                    <td><input form="@form" name="row" type="number" min="1" max="20" value="@seat.Row" class="form-control" style="width: 5rem" required /></td>
+                    <td><input form="@form" name="col" type="number" min="1" max="20" value="@seat.Col" class="form-control" style="width: 5rem" required /></td>
+                    <td>
+                        @if (seat.IsActive)
+                        {
+                            <span class="badge text-bg-success">открыто</span>
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-danger">закрыто</span>
+                        }
+                    </td>
+                    <td class="text-end text-nowrap">
+                        <form id="@form" method="post" asp-page-handler="Save" asp-route-id="@seat.Id" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-primary">Сохранить</button>
+                        </form>
+                        <form method="post" asp-page-handler="Active" asp-route-id="@seat.Id" asp-route-isActive="@(!seat.IsActive)" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">@(seat.IsActive ? "Закрыть" : "Открыть")</button>
+                        </form>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@seat.Id" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td><input form="seat-new" name="number" placeholder="Номер" class="form-control" style="width: 6rem" required /></td>
+                <td>
+                    <select form="seat-new" name="zoneId" class="form-select" style="min-width: 9rem">
+                        @foreach (var zone in Model.Zones)
+                        {
+                            <option value="@zone.Id">@zone.Name</option>
+                        }
+                    </select>
+                </td>
+                <td><input form="seat-new" name="row" type="number" min="1" max="20" value="1" class="form-control" style="width: 5rem" required /></td>
+                <td><input form="seat-new" name="col" type="number" min="1" max="20" value="1" class="form-control" style="width: 5rem" required /></td>
+                <td></td>
+                <td class="text-end">
+                    <form id="seat-new" method="post" asp-page-handler="Save">
+                        <button type="submit" class="btn btn-sm btn-success">Добавить</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<p class="text-muted small">Ряд и колонка задают положение места на карте. Закрытое место нельзя забронировать, уже созданные брони на нём остаются.</p>

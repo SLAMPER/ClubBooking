@@ -1,0 +1,51 @@
+@page
+@model ClubBooking.Web.Pages.Admin.TodayModel
+@using ClubBooking.Web.Services
+@{
+    ViewData["Title"] = "Брони на сегодня";
+}
+
+<h1 class="h3 mb-3">Брони на сегодня, @Model.Time.Now.ToString("dd.MM.yyyy")</h1>
+
+<partial name="_Messages" />
+
+@if (Model.Bookings.Count == 0)
+{
+    <p class="text-muted">На сегодня броней нет.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Время</th>
+                    <th>Место</th>
+                    <th>Клиент</th>
+                    <th>Статус</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model.Bookings)
+                {
+                    <tr>
+                        <td>с @Model.Time.ToLocal(b.StartUtc).ToString("HH:mm") до @Model.Time.ToLocal(b.EndUtc).ToString("HH:mm")</td>
+                        <td>@b.SeatNumber <span class="text-muted">(@b.ZoneName)</span></td>
+                        <td>@b.UserEmail</td>
+                        <td>@ClubTime.StatusText(b.Status)</td>
+                        <td class="text-end">
+                            @if (b.CanCheckIn)
+                            {
+                                <form method="post" asp-page-handler="CheckIn" asp-route-id="@b.Id">
+                                    <button type="submit" class="btn btn-sm btn-success">Отметить приход</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <p class="text-muted small">Приход можно отметить с 15 минут до начала брони до 15 минут после.</p>
+}
