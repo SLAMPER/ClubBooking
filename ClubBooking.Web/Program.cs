@@ -19,6 +19,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.AccessDeniedPath = "/Account/Login";
         options.Cookie.HttpOnly = true;
         options.Cookie.SameSite = SameSiteMode.Lax;
+        options.SlidingExpiration = false;
     });
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("admin", policy => policy.RequireRole("admin"))
