@@ -93,7 +93,8 @@ public class BookingsController(BookingsDbContext db, ISeatsClient seats, TimeZo
             .Where(b => b.SeatId == seat.Id && b.Status == BookingStatus.Booked && b.StartUtc < expired)
             .ExecuteUpdateAsync(s => s.SetProperty(b => b.Status, BookingStatus.NoShow));
 
-        var future = await db.Bookings.CountAsync(b => b.UserId == userId && b.Status == BookingStatus.Booked && b.StartUtc > now);
+        var future = await db.Bookings.CountAsync(b =>
+            b.UserId == userId && (b.Status == BookingStatus.Booked || b.Status == BookingStatus.CheckedIn) && b.StartUtc > now);
         var limitError = BookingRules.CheckLimit(future);
         if (limitError != null)
         {

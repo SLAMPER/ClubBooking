@@ -61,6 +61,19 @@ public class BookingsApiTests(BookingsApiFactory factory) : IClassFixture<Bookin
     }
 
     [Fact]
+    public async Task EarlyCheckedInBooking_StillCountsTowardsTheLimit()
+    {
+        var userId = Guid.NewGuid();
+        await AddBookingAsync(NewSeat(), DateTime.UtcNow.AddMinutes(10), 1, userId, BookingStatus.CheckedIn);
+        await AddBookingAsync(NewSeat(), DateTime.UtcNow.AddDays(1), 1, userId, BookingStatus.Booked);
+
+        var response = await factory.CreateClient(userId)
+            .PostAsJsonAsync("/api/bookings", new CreateBookingRequest(NewSeat(), Tomorrow(18), 1));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+    }
+
+    [Fact]
     public async Task Booking_ClosedSeat_ReturnsBadRequest()
     {
         var response = await factory.CreateClient(Guid.NewGuid())
@@ -137,18 +150,18 @@ public class BookingsApiTests(BookingsApiFactory factory) : IClassFixture<Bookin
         return new DateTimeOffset(now.Minute < 30 ? next : next.AddHours(1), TimeSpan.Zero);
     }
 
-    private async Task<Guid> AddBookingAsync(int seat, DateTime startUtc, int hours)
+    private async Task<Guid> AddBookingAsync(int seat, DateTime startUtc, int hours, Guid? userId = null, BookingStatus status = BookingStatus.Booked)
     {
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<BookingsDbContext>();
         var booking = new Booking
         {
             Id = Guid.NewGuid(),
-            UserId = Guid.NewGuid(),
+            UserId = userId ?? Guid.NewGuid(),
             SeatId = seat,
             StartUtc = startUtc,
             EndUtc = startUtc.AddHours(hours),
-            Status = BookingStatus.Booked,
+            Status = status,
             CreatedAt = DateTime.UtcNow
         };
         db.Bookings.Add(booking);
