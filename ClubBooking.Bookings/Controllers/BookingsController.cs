@@ -162,7 +162,7 @@ public class BookingsController(BookingsDbContext db, ISeatsClient seats, TimeZo
         var now = DateTime.UtcNow;
         var today = TimeZoneInfo.ConvertTimeFromUtc(now, club).Date;
         var from = TimeZoneInfo.ConvertTimeToUtc(today, club);
-        var to = TimeZoneInfo.ConvertTimeToUtc(today.AddDays(1), club);
+        var to = TimeZoneInfo.ConvertTimeToUtc(today.AddDays(1), club) + BookingRules.CheckInWindow;
 
         var bookings = await db.Bookings
             .Where(b => b.StartUtc >= from && b.StartUtc < to)
