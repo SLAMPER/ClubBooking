@@ -37,16 +37,16 @@ flowchart TB
 
 **Seats.** Зоны с дневным и ночным тарифом, места с рядом и колонкой на карте. Эндпоинты: `/api/zones` и `/api/seats` (читают все, меняет admin), `POST /api/seats/{id}/close` и `/open`. База `seats_db`.
 
-**Bookings.** Брони и правила бронирования в классе `BookingRules`, который проверяется тестами без базы. Эндпоинты: `GET /api/bookings/busy`, `POST /api/bookings`, `GET /api/bookings/my`, `POST /api/bookings/{id}/cancel`, для admin `GET /api/bookings/today` и `POST /api/bookings/{id}/checkin`. База `bookings_db`.
+**Bookings.** Брони и правила бронирования в классе `BookingRules`, который проверяется тестами без базы. Эндпоинты: `GET /api/bookings/busy` (занятые места), `GET /api/bookings/price` (цена до бронирования), `POST /api/bookings`, `GET /api/bookings/my`, `POST /api/bookings/{id}/cancel`, для admin `GET /api/bookings/today` и `POST /api/bookings/{id}/checkin`. База `bookings_db`.
 
-**Web.** Сайт на Razor Pages: вход, регистрация, карта мест, мои брони, зоны и места, брони на сегодня. Хранит JWT в cookie с флагом HttpOnly и обращается к сервисам со стороны сервера.
+**Web.** Сайт на Razor Pages: вход, регистрация, карта мест, мои брони, зоны и места, брони на сегодня. Вход идёт через Identity, полученный JWT сайт хранит в cookie с флагом HttpOnly и сам обращается к сервисам со стороны сервера.
 
 ## 5. Модель данных
 
 - `identity_db.users`: email, хеш пароля, роль;
 - `seats_db.zones`: название, дневной и ночной тариф;
 - `seats_db.seats`: зона, номер, ряд, колонка, открыто ли место;
-- `bookings_db.bookings`: клиент, место, начало и конец в UTC, цена, статус (`Booked`, `CheckedIn`, `Cancelled`, `NoShow`), время прихода.
+- `bookings_db.bookings`: клиент (id и email), место (id, номер и зона на момент брони), начало и конец в UTC, цена, статус (`Booked`, `CheckedIn`, `Cancelled`, `NoShow`), время прихода.
 
 Пересечение броней `Booked` и `CheckedIn` на одном месте запрещает exclusion constraint в PostgreSQL.
 
